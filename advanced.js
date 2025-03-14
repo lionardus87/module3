@@ -79,12 +79,107 @@ const cancelMsg = (message, delay) => {
 const msg2 = cancelMsg("clear 5sec timeout", 11000); //c) Add a fifth test which uses a large delay time (greater than 10 seconds)
 clearTimeout(msg2);
 
-//Question 3
-function printMe() {
-	console.log("printing debounced message");
+// Question 3
+function debounce(func, ms) {
+	let timer;
+	return function (...args) {
+		clearTimeout(timer); // Clear the previous timer
+		timer = setTimeout(() => func.apply(this, args), ms);
+	};
 }
-printMe = debounce(printMe); //create this debounce function for a)
+
+function printMe(msg) {
+	console.log(msg);
+}
+
+printMe = debounce(printMe, 2000); //create this debounce function for a)
+
 //fire off 3 calls to printMe within 300ms - only the LAST one should print, after 1000ms of no calls
-setTimeout(printMe, 100);
-setTimeout(printMe, 200);
-setTimeout(printMe, 300);
+setTimeout(() => printMe("1.."), 100);
+setTimeout(() => printMe("2.."), 200);
+setTimeout(() => printMe("3.."), 300);
+
+// Question 4
+// a) Write a function printFibonacci() using setInterval that outputs a number in the Fibonacci sequence every second.
+function printFibonacci(limit) {
+	let a = 0;
+	let b = 1;
+	count = 0;
+	const interval = setInterval(() => {
+		console.log(a);
+		let c = a + b;
+		a = b;
+		b = c;
+		count++;
+		if (count >= limit) {
+			clearInterval(interval);
+			console.log("finished");
+		}
+	}, 1000);
+}
+printFibonacci(10);
+
+// b) Write a new version printFibonacciTimeouts() that uses nested setTimeout calls to do the same thing
+function printFibonacciTimeouts(limit, delay = 1000, a = 0, b = 1, count = 0) {
+	if (count >= limit) {
+		console.log("finished");
+		return;
+	}
+	console.log(a);
+	setTimeout(() => {
+		printFibonacciTimeouts(limit, delay, b, a + b, count + 1);
+	}, delay);
+}
+printFibonacciTimeouts(10);
+// c) Extend one of the above functions to accept a limit argument, which tells it how many numbers to print before stopping.
+
+//Question 5
+let car = {
+	make: "Porsche",
+	model: "911",
+	year: 1964,
+
+	description() {
+		console.log(`This car is a ${this.make} ${this.model} from ${this.year}`);
+	},
+};
+car.description(); //works
+// a) Fix the setTimeout call by wrapping the call to car.description() inside a function
+setTimeout(() => {
+	car.description(), 200;
+});
+setTimeout(car.description.bind(car), 200); //fails
+
+// b) Change the year for the car by creating a clone of the original and overriding it
+let newCar = { ...car, year: 2024 };
+newCar.description();
+
+// c) Does the delayed description() call use the original values or the new values from b)? Why?
+// because newCar class has setTimeout function and JS doesnt remember the object
+
+// d) Use bind to fix the description method so that it can be called from within setTimeout without a wrapper function
+setTimeout(newCar.description.bind(newCar), 200);
+
+// e) Change another property of the car by creating a clone and overriding it, and test that setTimeout still uses the bound value from d)
+let bindDesc = newCar.description.bind(newCar);
+setTimeout(bindDesc, 200);
+let newerCar = { ...newCar, model: "991" };
+setTimeout(bindDesc, 400);
+
+//Question 6
+// a) Use the example multiply function below to test it with, as above, and assume that all delayed functions will take two parameters
+Function.prototype.delay = function (ms) {
+	let fn = this;
+	return function (...args) {
+		// b) Use apply to improve your solution so that delayed functions can take any number of parameters
+		setTimeout(() => fn.apply(null, args), ms);
+	};
+};
+// c) Modify multiply to take 4 parameters and multiply all of them, and test that your delay prototype function still works.
+function multiply(a, b, c, d) {
+	console.log(a * b * c * d);
+}
+multiply.delay(500)(1, 2, 3, 4); // prints 25 after 500 milliseconds
+
+//Question 7
+
