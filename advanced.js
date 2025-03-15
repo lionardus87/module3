@@ -104,7 +104,7 @@ setTimeout(() => printMe("3.."), 300);
 function printFibonacci(limit) {
 	let a = 0;
 	let b = 1;
-	count = 0;
+	let count = 0;
 	const interval = setInterval(() => {
 		console.log(a);
 		let c = a + b;
@@ -276,10 +276,14 @@ function orderItems(...itemName) {
 	const item = itemName.join(", ");
 	console.log(`Order placed for: ${item}`);
 }
+try{
 const validatedOrderItem = validateStringArg(orderItems);
+
 console.log(validatedOrderItem("Apple Watch", "Ipad", "Iphone")); // should run the function
 console.log(validatedOrderItem("Apple Watch", 123));
-
+} catch(error) {
+	console.log(error.message);
+}
 // d) When testing the decorated function, use try-catch blocks to handle errors thrown for
 // non-string arguments
 

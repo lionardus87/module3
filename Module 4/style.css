@@ -1,0 +1,27 @@
+body{
+    display: block;
+    justify-items: center;
+    align-content: center;
+}
+input {
+    display: block;
+    margin: 5px;
+    width:200px;
+    height:30px;
+    font-size: medium;
+    text-align: center;
+}
+
+.operators button{
+    background-color: grey;
+    color: white;
+    font-size: large;
+    margin: 3px;
+}
+
+.reset button {
+    background-color:orange;
+    color: antiquewhite;
+    font-size: x-large;
+    margin: 3px;
+}

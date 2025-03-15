@@ -18,18 +18,23 @@ Provide clear button "C" to clear the result and clear the screen -->
         <link rel="stylesheet" href="style.css">
     </head>
     <body>
-        <div class="calculator"></div>
-        <input type="number" id="num1" placeholder="Input First Number: "></input>
-        <input type="number" id="num2" placeholder="Input Second Number: "></input>
-        <div class="operators">
-            <button onclick="add">+</button>
-            <button onclick="minus">-</button>
-            <button onclick="multiply">*</button>
-            <button onclick="divide">/</button>
+        <div class="inputField">
+            <input type="number" id="num1" placeholder="Input First Number: "></input>
+            <input type="number" id="num2" placeholder="Input Second Number: "></input>
         </div>
-        <button onClick="equal">=</button>
-        <button onClick="clear">C</button>
-        <div class="result" id="result"></div>
+        <div class="operators">
+            <button onClick="calculation('+')">+</button>
+            <button onClick="calculation('-')">-</button>
+            <button onClick="calculation('*')">*</button>
+            <button onClick="calculation('/')">/</button>
+        </div>
+        <div class="reset">
+        <button onClick="equal()">=</button>
+        <button onClick="clear()">C</button>
+    </div>
+        <div>
+            <h2>Result: <input type="text" id="result" readonly></h2>
+        </div>
     </body>
     <script src="calculator.js"></script>
 </html>
