@@ -182,4 +182,182 @@ function multiply(a, b, c, d) {
 multiply.delay(500)(1, 2, 3, 4); // prints 25 after 500 milliseconds
 
 //Question 7
+class DigitalClock {
+	constructor(prefix) {
+		this.prefix = prefix;
+	}
+	display() {
+		let date = new Date();
+		//create 3 variables in one go using array destructuring
+		let [hours, mins, secs] = [
+			date.getHours(),
+			date.getMinutes(),
+			date.getSeconds(),
+		];
 
+		if (hours < 10) hours = "0" + hours;
+		if (mins < 10) mins = "0" + mins;
+		if (secs < 10) secs = "0" + secs;
+		console.log(`${this.prefix} ${hours}:${mins}:${secs}`);
+	}
+	stop() {
+		clearInterval(this.timer);
+	}
+	start() {
+		this.display();
+		this.timer = setInterval(() => this.display(), 1000);
+	}
+}
+
+const myClock = new DigitalClock("my clock:");
+myClock.start();
+
+//a) Create a new class PrecisionClock that inherits from DigitalClock and adds the parameter precision – the number of ms between 'ticks'. This precision parameter should default to 1 second if not supplied.
+class PrecisionClock extends DigitalClock {
+	constructor(prefix, precision = 1000) {
+		super(prefix);
+		this.precision = precision;
+	}
+	start() {
+		this.display();
+		this.timer = setInterval(() => this.display(), this.precision);
+	}
+}
+
+const preciseClock = new PrecisionClock("Precise Clock:", 500);
+preciseClock.start();
+
+//b) Create a new class AlarmClock that inherits from DigitalClock and adds the
+// parameter wakeupTime in the format hh:mm. When the clock reaches this time, it
+// should print a 'Wake Up' message and stop ticking. This wakeupTime parameter should
+// default to 07:00 if not supplied.
+class AlarmClock extends DigitalClock {
+	constructor(prefix, alarmTime = "7:00") {
+		super(prefix);
+		this.alarmTime = alarmTime;
+	}
+	display() {
+		let date = new Date();
+		let [hours, mins] = [date.getHours(), date.getMinutes()].map((n) =>
+			n < 10 ? "0" + n : n
+		);
+		let currentTime = `${hours}:${mins}`;
+
+		console.log(`${this.prefix} ${currentTime}`);
+
+		if (currentTime === this.alarmTime) {
+			console.log("Wake Up!");
+			this.stop();
+		}
+	}
+}
+
+const alarm = new AlarmClock("alarm:", "12:00");
+alarm.start();
+
+// Question 8
+
+// a) Create a decorator function validateStringArg(fn) which will validate an
+// argument passed to fn to ensure that it is a string, throwing an error if not
+function validateStringArg(fn) {
+	// c) Extend the decorator function to validate as strings all arguments passed to fn
+	return function (...args) {
+		args.forEach((arg) => {
+			if (typeof arg !== "string") {
+				throw new TypeError("Input must be a string");
+			}
+		});
+		return fn(...args);
+	};
+}
+// b) Extend orderItems to use the ... rest operator, allowing multiple item name
+// arguments, and include them all in the returned string
+function orderItems(...itemName) {
+	const item = itemName.join(", ");
+	console.log(`Order placed for: ${item}`);
+}
+const validatedOrderItem = validateStringArg(orderItems);
+console.log(validatedOrderItem("Apple Watch", "Ipad", "Iphone")); // should run the function
+console.log(validatedOrderItem("Apple Watch", 123));
+
+// d) When testing the decorated function, use try-catch blocks to handle errors thrown for
+// non-string arguments
+
+try {
+	validatedOrderItem("Apple Watch", "Ipad", "Iphone");
+} catch (error) {
+	console.log(error.message);
+}
+try {
+	validatedOrderItem("Apple Watch", 123);
+} catch (error) {
+	console.log(error.message);
+}
+
+// Question 9
+function randomDelay() {
+	// your code
+	// 	a) Create a promise-based alternative randomDelay() that delays execution for a
+	// random amount of time (between 1 and 20 seconds) and returns a promise we can use
+	// via .then(), as in the starter code below
+	const delayTime = Math.floor(Math.random() * 2000) + 1000;
+	// 	b) If the random delay is even, consider this a successful delay and resolve the promise,
+	// and if the random number is odd, consider this a failure and reject it
+	return new Promise((resolve, reject) => {
+		setTimeout(() => {
+			if (delayTime % 2 === 0) {
+				resolve(`Success for ${delayTime/1000} seconds.`);
+			} else {
+				reject(`Failed for ${delayTime / 1000} seconds`);
+			}
+		}, delayTime);
+	});
+}
+randomDelay()
+	//d) Try to update the then and catch messages to include the random delay value
+	.then((message) => console.log(`Promise resolved ${message} `))
+	.catch((error) => {
+		//c) Update the testing code to catch rejected promises and print a different message
+		console.error(`Promise rejected ${error}`);
+	});
+
+// Question 10
+// run 'npm init' and accept all the defaults
+// run 'npm install node-fetch'
+// run 'npm pkg set type=module'
+import fetch from "node-fetch";
+globalThis.fetch = fetch;
+async function fetchURLData(urls) {
+	try {
+		let fetchPromises = urls.map((url) =>
+			fetch(url).then((response) => {
+				if (response.status === 200) {
+					return response.json();
+				} else {
+					throw new Error(
+						`Request failed with status ${response.status}`
+					);
+				}
+			})
+		);
+		const result = await Promise.all(fetchPromises);
+		return result;
+	} catch (error) {
+		throw error;
+	}
+	return false;
+}
+const urls = [
+	"https://jsonplaceholder.typicode.com/todos/1",
+	"https://jsonplaceholder.typicode.com/todos/2",
+	"https://jsonplaceholder.typicode.com/todos/3",
+];
+
+fetchURLData(urls)
+	.then((data) => console.log(data))
+	.catch((error) => console.error(error.message));
+// a) Write a new version of this function using async/await
+
+// b) Test both functions with valid and invalid URLs
+// c) (Extension) Extend your new function to accept an array of URLs and fetch all of them,
+// using Promise.all to combine the results.

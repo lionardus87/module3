@@ -1,0 +1,35 @@
+<!-- Requirement
+a) Get data (two numbers)
+user need to input 2 numbers by providing 2 input fields
+b) Choose an operator
+providing operator ( +, -, * and /)
+user can select one of four operators button to calculate 2 numbers
+c) Get the result
+after user input 2 numbers and select operator, provide "=" button to get the result
+d) Reset the screen
+Provide clear button "C" to clear the result and clear the screen -->
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Calculator</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <div class="calculator"></div>
+        <input type="number" id="num1" placeholder="Input First Number: "></input>
+        <input type="number" id="num2" placeholder="Input Second Number: "></input>
+        <div class="operators">
+            <button onclick="add">+</button>
+            <button onclick="minus">-</button>
+            <button onclick="multiply">*</button>
+            <button onclick="divide">/</button>
+        </div>
+        <button onClick="equal">=</button>
+        <button onClick="clear">C</button>
+        <div class="result" id="result"></div>
+    </body>
+    <script src="calculator.js"></script>
+</html>
